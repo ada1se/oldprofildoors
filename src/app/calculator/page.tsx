@@ -1,9 +1,11 @@
 "use client";
 
 import { Plus, Save, FileText } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useCalculatorStore } from "@/store/calculator-store";
 import { RoomBlock } from "@/components/features/RoomBlock";
 import { formatPrice } from "@/lib/mock-data";
+import { getAllSeries, type SeriesOption } from "@/actions/catalog";
 
 export default function CalculatorPage() {
   const {
@@ -14,12 +16,21 @@ export default function CalculatorPage() {
     totalPrice,
   } = useCalculatorStore();
 
+  // Load series list once on mount (shared across all room blocks)
+  const [seriesList, setSeriesList] = useState<SeriesOption[]>([]);
+
+  useEffect(() => {
+    getAllSeries().then(setSeriesList);
+  }, []);
+
   const hasRooms = rooms.length > 0;
   const isReadyToSave =
     clientInfo.name.trim() !== "" &&
     clientInfo.phone.trim() !== "" &&
     hasRooms &&
-    rooms.every((r) => r.model && r.category && r.width && r.height);
+    rooms.every(
+      (r) => r.seriesId && r.model && r.category && r.width && r.height
+    );
 
   return (
     <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
@@ -141,7 +152,12 @@ export default function CalculatorPage() {
           {/* Room blocks list */}
           {hasRooms ? (
             rooms.map((room, index) => (
-              <RoomBlock key={room.id} room={room} index={index} />
+              <RoomBlock
+                key={room.id}
+                room={room}
+                index={index}
+                seriesList={seriesList}
+              />
             ))
           ) : (
             <div

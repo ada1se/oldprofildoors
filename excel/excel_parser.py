@@ -52,8 +52,12 @@ def parse_excel_to_json(file_path, output_path):
                 fill_type = str(df.iloc[i, 1]).strip()
                 price = df.iloc[i, 4] # Индекс 4 - это колонка E (Розница)
                 
-                # Если дошли до пустой строки или строки с наценками — останавливаемся
-                if pd.isna(model_name) or model_name == 'nan' or "Наценка" in model_name:
+                # Пропускаем пустые строки (например, между заголовком и данными)
+                if pd.isna(model_name) or model_name == 'nan' or model_name == '':
+                    continue
+                
+                # Если дошли до строки с наценками — останавливаемся
+                if "Наценка" in model_name:
                     break 
                     
                 if not pd.isna(price):

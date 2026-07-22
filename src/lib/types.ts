@@ -134,9 +134,13 @@ export interface RoomConfig {
   id: string;
   roomName: string;
   quantity: number;
-  model: string;
+  seriesId: string;
   series: string;
+  model: string;
+  fillType: string;
+  basePrice: number;
   category: string;
+  categoryMarkupValue: number;
   width: DoorWidth | null;
   height: DoorHeight | null;
   baseColor: string;

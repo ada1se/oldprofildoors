@@ -1,47 +1,79 @@
 "use client";
 
-import { Trash2, ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { Trash2, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { useState, useEffect, useTransition } from "react";
 import { useCalculatorStore } from "@/store/calculator-store";
 import {
   AVAILABLE_WIDTHS,
   AVAILABLE_HEIGHTS,
   type RoomConfig,
 } from "@/lib/types";
+import {
+  getAllSeries,
+  getSeriesDetails,
+  type SeriesOption,
+  type ModelOption,
+  type CategoryMarkupOption,
+} from "@/actions/catalog";
 
 interface RoomBlockProps {
   room: RoomConfig;
   index: number;
+  /** Pre-loaded series list shared across all rooms */
+  seriesList: SeriesOption[];
 }
 
-/** Temporary model options for MVP skeleton */
-const MODEL_OPTIONS = [
-  { value: "1 PE.O", label: "1 PE.O" },
-  { value: "2 PE.O", label: "2 PE.O" },
-  { value: "1.1 P.O", label: "1.1 P.O" },
-  { value: "2.1 P.O", label: "2.1 P.O" },
-  { value: "1.1.1 PD", label: "1.1.1 PD" },
-  { value: "2.1.1 PD", label: "2.1.1 PD" },
-];
+export function RoomBlock({ room, index, seriesList }: RoomBlockProps) {
+  const {
+    updateRoom,
+    removeRoom,
+    setRoomDimensions,
+    setRoomSeries,
+    setRoomModel,
+    setRoomCategory,
+  } = useCalculatorStore();
 
-const CATEGORY_OPTIONS = [
-  { value: "1", label: "Категория 1 (база)" },
-  { value: "2", label: "Категория 2" },
-  { value: "3", label: "Категория 3" },
-];
-
-export function RoomBlock({ room, index }: RoomBlockProps) {
-  const { updateRoom, removeRoom, setRoomDimensions } = useCalculatorStore();
   const [isExpanded, setIsExpanded] = useState(true);
 
-  /** Which step is currently active (sequential reveal) */
-  const currentStep = !room.model
-    ? 1
-    : !room.category
-      ? 2
-      : !room.width || !room.height
-        ? 3
-        : 4;
+  // DB-fetched data for the selected series
+  const [models, setModels] = useState<ModelOption[]>([]);
+  const [categoryMarkups, setCategoryMarkups] = useState<
+    CategoryMarkupOption[]
+  >([]);
+  const [isPending, startTransition] = useTransition();
+
+  // Fetch models & categories when series changes
+  useEffect(() => {
+    if (!room.seriesId) {
+      setModels([]);
+      setCategoryMarkups([]);
+      return;
+    }
+
+    startTransition(async () => {
+      const details = await getSeriesDetails(room.seriesId);
+      setModels(details.models);
+      setCategoryMarkups(details.categoryMarkups);
+    });
+  }, [room.seriesId]);
+
+  /**
+   * Sequential step logic:
+   * Step 0: Select Series
+   * Step 1: Select Model (after series)
+   * Step 2: Select Category (after model)
+   * Step 3: Select Dimensions (after category)
+   * Step 4: Options — transom, false panel, quantity (after dimensions)
+   */
+  const currentStep = !room.seriesId
+    ? 0
+    : !room.model
+      ? 1
+      : !room.category
+        ? 2
+        : !room.width || !room.height
+          ? 3
+          : 4;
 
   return (
     <div
@@ -85,12 +117,13 @@ export function RoomBlock({ room, index }: RoomBlockProps) {
           </div>
           <div>
             <p className="title-medium">{room.roomName}</p>
-            {room.model && (
+            {room.series && (
               <p
                 className="body-small"
                 style={{ color: "var(--color-on-surface-variant)" }}
               >
-                {room.model}
+                {room.series}
+                {room.model ? ` · ${room.model}` : ""}
                 {room.width && room.height
                   ? ` · ${room.width}×${room.height} мм`
                   : ""}
@@ -159,7 +192,7 @@ export function RoomBlock({ room, index }: RoomBlockProps) {
             />
           </div>
 
-          {/* Step 1: Select Model */}
+          {/* Step 0: Select Series */}
           <div style={{ marginBottom: 24 }}>
             <label
               className="label-medium"
@@ -169,27 +202,107 @@ export function RoomBlock({ room, index }: RoomBlockProps) {
                 color: "var(--color-on-surface-variant)",
               }}
             >
-              Шаг 1 — Модель двери
+              Шаг 1 — Коллекция (серия)
             </label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {MODEL_OPTIONS.map((opt) => (
+              {seriesList.map((s) => (
                 <button
-                  key={opt.value}
-                  className={`md3-chip ${room.model === opt.value ? "selected" : ""}`}
-                  onClick={() =>
-                    updateRoom(room.id, {
-                      model: opt.value,
-                      series: opt.value.split(" ")[1] ?? "",
-                    })
-                  }
+                  key={s.id}
+                  className={`md3-chip ${room.seriesId === s.id ? "selected" : ""}`}
+                  onClick={() => setRoomSeries(room.id, s.id, s.name)}
                 >
-                  {opt.label}
+                  {s.name}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Step 2: Select Category (appears after model is chosen) */}
+          {/* Step 1: Select Model (loaded from DB for the selected series) */}
+          {currentStep >= 1 && (
+            <div
+              style={{
+                marginBottom: 24,
+                animation: "fadeSlideIn 300ms ease",
+              }}
+            >
+              <label
+                className="label-medium"
+                style={{
+                  display: "block",
+                  marginBottom: 12,
+                  color: "var(--color-on-surface-variant)",
+                }}
+              >
+                Шаг 2 — Модель двери
+                {isPending && (
+                  <Loader2
+                    size={14}
+                    style={{
+                      display: "inline-block",
+                      marginLeft: 8,
+                      animation: "spin 1s linear infinite",
+                    }}
+                  />
+                )}
+              </label>
+
+              {isPending ? (
+                <div
+                  style={{
+                    padding: "16px 0",
+                    color: "var(--color-on-surface-variant)",
+                  }}
+                  className="body-small"
+                >
+                  Загрузка моделей...
+                </div>
+              ) : models.length > 0 ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 8,
+                  }}
+                >
+                  {models.map((m) => (
+                    <button
+                      key={m.id}
+                      className={`md3-chip ${room.model === m.name ? "selected" : ""}`}
+                      onClick={() =>
+                        setRoomModel(
+                          room.id,
+                          m.name,
+                          m.fillType,
+                          m.basePrice
+                        )
+                      }
+                      title={`${m.fillType} · ${new Intl.NumberFormat("ru-KZ").format(m.basePrice)} ₸`}
+                    >
+                      {m.name}
+                      <span
+                        style={{
+                          fontSize: 11,
+                          opacity: 0.7,
+                          marginLeft: 4,
+                        }}
+                      >
+                        ({m.fillType})
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  className="body-small"
+                  style={{ color: "var(--color-on-surface-variant)" }}
+                >
+                  Нет доступных моделей для этой серии
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 2: Select Category (from DB categoryMarkups for this series) */}
           {currentStep >= 2 && (
             <div
               style={{
@@ -205,21 +318,64 @@ export function RoomBlock({ room, index }: RoomBlockProps) {
                   color: "var(--color-on-surface-variant)",
                 }}
               >
-                Шаг 2 — Категория покрытия
+                Шаг 3 — Категория покрытия
               </label>
+
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {CATEGORY_OPTIONS.map((opt) => (
+                {/* Category 1 is always the base (no markup) */}
+                <button
+                  className={`md3-chip ${room.category === "Category 1" ? "selected" : ""}`}
+                  onClick={() =>
+                    setRoomCategory(room.id, "Category 1", 0)
+                  }
+                >
+                  Категория 1 (база)
+                </button>
+
+                {/* Dynamic categories from DB */}
+                {categoryMarkups.map((cat) => (
                   <button
-                    key={opt.value}
-                    className={`md3-chip ${room.category === opt.value ? "selected" : ""}`}
+                    key={cat.id}
+                    className={`md3-chip ${room.category === cat.categoryName ? "selected" : ""}`}
                     onClick={() =>
-                      updateRoom(room.id, { category: opt.value })
+                      setRoomCategory(
+                        room.id,
+                        cat.categoryName,
+                        cat.markupValue
+                      )
                     }
                   >
-                    {opt.label}
+                    {cat.categoryName}
+                    <span
+                      style={{
+                        fontSize: 11,
+                        opacity: 0.7,
+                        marginLeft: 4,
+                      }}
+                    >
+                      (+{new Intl.NumberFormat("ru-KZ").format(cat.markupValue)})
+                    </span>
                   </button>
                 ))}
               </div>
+
+              {/* Selected model info */}
+              {room.model && (
+                <div
+                  style={{
+                    marginTop: 12,
+                    padding: "8px 12px",
+                    borderRadius: "var(--radius-sm)",
+                    backgroundColor: "var(--color-surface-container)",
+                  }}
+                >
+                  <p className="body-small" style={{ color: "var(--color-on-surface-variant)" }}>
+                    Базовая цена модели{" "}
+                    <strong>{room.model}</strong>:{" "}
+                    {new Intl.NumberFormat("ru-KZ").format(room.basePrice)} ₸
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -239,7 +395,7 @@ export function RoomBlock({ room, index }: RoomBlockProps) {
                   color: "var(--color-on-surface-variant)",
                 }}
               >
-                Шаг 3 — Размеры (только фиксированные значения)
+                Шаг 4 — Размеры (только фиксированные значения)
               </label>
 
               {/* Width */}
@@ -295,7 +451,7 @@ export function RoomBlock({ room, index }: RoomBlockProps) {
             </div>
           )}
 
-          {/* Step 4: Transom Toggle */}
+          {/* Step 4: Options — Transom, False Panel, Quantity */}
           {currentStep >= 4 && (
             <div
               style={{
