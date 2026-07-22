@@ -1,0 +1,596 @@
+@import "tailwindcss";
+
+/* ===================================================================
+   Material Design 3 Expressive — Design Tokens
+   ProfilDoors CRM System
+   =================================================================== */
+
+@theme {
+  /* --- Primary Palette --- */
+  --color-primary: #6750A4;
+  --color-on-primary: #FFFFFF;
+  --color-primary-container: #EADDFF;
+  --color-on-primary-container: #21005E;
+
+  /* --- Secondary Palette --- */
+  --color-secondary: #625B71;
+  --color-on-secondary: #FFFFFF;
+  --color-secondary-container: #E8DEF8;
+  --color-on-secondary-container: #1E192B;
+
+  /* --- Tertiary Palette --- */
+  --color-tertiary: #7D5260;
+  --color-on-tertiary: #FFFFFF;
+  --color-tertiary-container: #FFD8E4;
+  --color-on-tertiary-container: #370B1E;
+
+  /* --- Error --- */
+  --color-error: #B3261E;
+  --color-on-error: #FFFFFF;
+  --color-error-container: #F9DEDC;
+  --color-on-error-container: #410E0B;
+
+  /* --- Surface / Background --- */
+  --color-surface: #FEF7FF;
+  --color-surface-dim: #DED8E1;
+  --color-surface-bright: #FEF7FF;
+  --color-surface-container-lowest: #FFFFFF;
+  --color-surface-container-low: #F7F2FA;
+  --color-surface-container: #F3EDF7;
+  --color-surface-container-high: #ECE6F0;
+  --color-surface-container-highest: #E6E0E9;
+  --color-on-surface: #1D1B20;
+  --color-on-surface-variant: #49454F;
+  --color-outline: #79747E;
+  --color-outline-variant: #CAC4D0;
+
+  /* --- Inverse --- */
+  --color-inverse-surface: #322F35;
+  --color-inverse-on-surface: #F5EFF7;
+  --color-inverse-primary: #D0BCFF;
+
+  /* --- Status Colors (Order badges) --- */
+  --color-status-new: #006C4C;
+  --color-status-new-bg: #C4F5E0;
+  --color-status-progress: #005DB5;
+  --color-status-progress-bg: #D4E4FF;
+  --color-status-pending: #8B6800;
+  --color-status-pending-bg: #FFDF9E;
+  --color-status-completed: #36618E;
+  --color-status-completed-bg: #D1E4FF;
+  --color-status-canceled: #BA1A1A;
+  --color-status-canceled-bg: #FFDAD6;
+
+  /* --- Shape Tokens (MD3 Expressive: larger, more rounded) --- */
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+
+  /* --- Elevation Shadows --- */
+  --shadow-1: 0px 1px 3px 1px rgba(0,0,0,0.15), 0px 1px 2px 0px rgba(0,0,0,0.3);
+  --shadow-2: 0px 2px 6px 2px rgba(0,0,0,0.15), 0px 1px 2px 0px rgba(0,0,0,0.3);
+  --shadow-3: 0px 4px 8px 3px rgba(0,0,0,0.15), 0px 1px 3px 0px rgba(0,0,0,0.3);
+  --shadow-4: 0px 6px 10px 4px rgba(0,0,0,0.15), 0px 2px 3px 0px rgba(0,0,0,0.3);
+  --shadow-5: 0px 8px 12px 6px rgba(0,0,0,0.15), 0px 4px 4px 0px rgba(0,0,0,0.3);
+}
+
+/* ===================================================================
+   Base Layer
+   =================================================================== */
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    min-height: 100vh;
+  }
+
+  /* --- MD3 Typography Scale --- */
+  .display-large {
+    font-size: 57px;
+    line-height: 64px;
+    letter-spacing: -0.25px;
+    font-weight: 400;
+  }
+
+  .display-medium {
+    font-size: 45px;
+    line-height: 52px;
+    font-weight: 400;
+  }
+
+  .display-small {
+    font-size: 36px;
+    line-height: 44px;
+    font-weight: 400;
+  }
+
+  .headline-large {
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 400;
+  }
+
+  .headline-medium {
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 400;
+  }
+
+  .headline-small {
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 400;
+  }
+
+  .title-large {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 500;
+  }
+
+  .title-medium {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    letter-spacing: 0.15px;
+  }
+
+  .title-small {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+
+  .body-large {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+  }
+
+  .body-medium {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    letter-spacing: 0.25px;
+  }
+
+  .body-small {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+  }
+
+  .label-large {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+  }
+
+  .label-medium {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .label-small {
+    font-size: 11px;
+    line-height: 16px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* ===================================================================
+   Component Layer — MD3 Expressive Component Styles
+   =================================================================== */
+
+@layer components {
+  /* --- Ripple Effect --- */
+  .ripple-effect {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple-effect::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    transition: opacity 200ms ease;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .ripple-effect:hover::after {
+    opacity: 0.08;
+  }
+
+  .ripple-effect:active::after {
+    opacity: 0.12;
+  }
+
+  /* --- MD3 Card Elevated --- */
+  .md3-card {
+    background-color: var(--color-surface-container-low);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-1);
+    transition: box-shadow 300ms ease, transform 200ms ease;
+    padding: 24px;
+  }
+
+  .md3-card:hover {
+    box-shadow: var(--shadow-2);
+  }
+
+  /* --- MD3 Card Filled --- */
+  .md3-card-filled {
+    background-color: var(--color-surface-container-highest);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    transition: background-color 200ms ease;
+  }
+
+  /* --- MD3 Card Outlined --- */
+  .md3-card-outlined {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    transition: border-color 200ms ease;
+  }
+
+  /* --- MD3 Filled Button --- */
+  .md3-btn-filled {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    border: none;
+    cursor: pointer;
+    transition: box-shadow 200ms ease, background-color 200ms ease;
+  }
+
+  .md3-btn-filled:hover {
+    box-shadow: var(--shadow-1);
+  }
+
+  .md3-btn-filled:active {
+    box-shadow: none;
+  }
+
+  .md3-btn-filled:disabled {
+    background-color: color-mix(in srgb, var(--color-on-surface) 12%, transparent);
+    color: color-mix(in srgb, var(--color-on-surface) 38%, transparent);
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  /* --- MD3 Outlined Button --- */
+  .md3-btn-outlined {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: var(--radius-full);
+    background-color: transparent;
+    color: var(--color-primary);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    border: 1px solid var(--color-outline);
+    cursor: pointer;
+    transition: background-color 200ms ease;
+  }
+
+  .md3-btn-outlined:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  /* --- MD3 Tonal Button --- */
+  .md3-btn-tonal {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    border: none;
+    cursor: pointer;
+    transition: box-shadow 200ms ease;
+  }
+
+  .md3-btn-tonal:hover {
+    box-shadow: var(--shadow-1);
+  }
+
+  /* --- MD3 Text Button --- */
+  .md3-btn-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: var(--radius-full);
+    background-color: transparent;
+    color: var(--color-primary);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 200ms ease;
+  }
+
+  .md3-btn-text:hover {
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  /* --- MD3 FAB --- */
+  .md3-fab {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+    background-color: var(--color-primary-container);
+    color: var(--color-on-primary-container);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-3);
+    transition: box-shadow 300ms ease, transform 200ms ease;
+  }
+
+  .md3-fab:hover {
+    box-shadow: var(--shadow-4);
+    transform: translateY(-1px);
+  }
+
+  .md3-fab:active {
+    box-shadow: var(--shadow-2);
+    transform: translateY(0);
+  }
+
+  /* --- MD3 Extended FAB --- */
+  .md3-fab-extended {
+    padding: 16px 20px;
+    border-radius: var(--radius-lg);
+  }
+
+  /* --- MD3 Chip --- */
+  .md3-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-outline);
+    background-color: transparent;
+    color: var(--color-on-surface);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    transition: background-color 200ms ease, border-color 200ms ease;
+    user-select: none;
+  }
+
+  .md3-chip:hover {
+    background-color: color-mix(in srgb, var(--color-on-surface) 8%, transparent);
+  }
+
+  .md3-chip[data-selected="true"],
+  .md3-chip.selected {
+    background-color: var(--color-secondary-container);
+    color: var(--color-on-secondary-container);
+    border-color: transparent;
+  }
+
+  /* --- MD3 Badge --- */
+  .md3-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 12px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  /* --- MD3 Input Field --- */
+  .md3-input {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+    border: none;
+    border-bottom: 2px solid var(--color-outline);
+    background-color: var(--color-surface-container-highest);
+    color: var(--color-on-surface);
+    font-size: 16px;
+    line-height: 24px;
+    outline: none;
+    transition: border-color 200ms ease;
+  }
+
+  .md3-input:focus {
+    border-bottom-color: var(--color-primary);
+  }
+
+  .md3-input::placeholder {
+    color: var(--color-on-surface-variant);
+  }
+
+  /* --- MD3 Toggle / Switch --- */
+  .md3-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .md3-toggle-track {
+    width: 52px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-container-highest);
+    border: 2px solid var(--color-outline);
+    position: relative;
+    transition: background-color 300ms ease, border-color 300ms ease;
+  }
+
+  .md3-toggle-track[data-active="true"] {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .md3-toggle-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-outline);
+    position: absolute;
+    top: 50%;
+    left: 6px;
+    transform: translateY(-50%);
+    transition: left 300ms ease, width 300ms ease, height 300ms ease, background-color 300ms ease;
+  }
+
+  .md3-toggle-track[data-active="true"] .md3-toggle-thumb {
+    left: 28px;
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-on-primary);
+  }
+
+  /* --- Navigation Rail --- */
+  .nav-rail {
+    width: 80px;
+    min-height: 100vh;
+    background-color: var(--color-surface-container);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0 16px;
+    gap: 4px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 50;
+  }
+
+  .nav-rail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+    cursor: pointer;
+    width: 100%;
+    text-decoration: none;
+    color: var(--color-on-surface-variant);
+    transition: color 200ms ease;
+  }
+
+  .nav-rail-item:hover {
+    color: var(--color-on-surface);
+  }
+
+  .nav-rail-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    transition: background-color 200ms ease;
+  }
+
+  .nav-rail-item:hover .nav-rail-indicator {
+    background-color: color-mix(in srgb, var(--color-on-surface) 8%, transparent);
+  }
+
+  .nav-rail-item[data-active="true"] .nav-rail-indicator {
+    background-color: var(--color-secondary-container);
+  }
+
+  .nav-rail-item[data-active="true"] {
+    color: var(--color-on-secondary-container);
+  }
+
+  .nav-rail-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  /* --- Scrollbar Styling --- */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-outline-variant);
+    border-radius: var(--radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-outline);
+  }
+}
+
+/* ===================================================================
+   Utility Layer
+   =================================================================== */
+
+@layer utilities {
+  .elevation-0 { box-shadow: none; }
+  .elevation-1 { box-shadow: var(--shadow-1); }
+  .elevation-2 { box-shadow: var(--shadow-2); }
+  .elevation-3 { box-shadow: var(--shadow-3); }
+  .elevation-4 { box-shadow: var(--shadow-4); }
+  .elevation-5 { box-shadow: var(--shadow-5); }
+}

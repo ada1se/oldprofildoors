@@ -1,0 +1,86 @@
+// ===================================================================
+// ProfilDoors — Prisma Schema
+// Based on 02_data_dictionary.md
+// Provider: SQLite (MVP) → PostgreSQL (production)
+// ===================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// -------------------------------------------------------------------
+// Client — stores customer contact information
+// -------------------------------------------------------------------
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String   @unique
+  address   String?
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// -------------------------------------------------------------------
+// Order — represents a sales calculation or confirmed deal
+// Status: NEW | MEASUREMENT_DONE | QUOTE_SENT | PENDING_DECISION |
+//         CONFIRMED | PRODUCTION | DELIVERY | INSTALLATION |
+//         COMPLETED | CANCELED | ARCHIVED
+// Note: SQLite doesn't support native enums — stored as String.
+//       On PostgreSQL migration, convert to native enum.
+// -------------------------------------------------------------------
+model Order {
+  id          String      @id @default(uuid())
+  clientId    String
+  client      Client      @relation(fields: [clientId], references: [id])
+  status      String      @default("NEW")
+  totalAmount Float       @default(0)
+  items       OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([clientId])
+  @@index([status])
+}
+
+// -------------------------------------------------------------------
+// OrderItem — a single configured door/opening within an order
+// Core output of the Calculator.
+//
+// CRITICAL CONSTRAINTS:
+//   - edgeProfileColor: separate from baseColor (edge profiles ONLY)
+//   - hasFalsePanel: when true, casing goes BETWEEN door and panel
+//   - width/height: only fixed values allowed (no freeform input)
+// -------------------------------------------------------------------
+model OrderItem {
+  id               String  @id @default(uuid())
+  orderId          String
+  order            Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  roomName         String
+  quantity         Int     @default(1)
+  width            Int     // mm: 400, 600, 700, 800, 900, 1000
+  height           Int     // mm: 2000, 2100, 2400
+
+  // Product Specifications
+  series           String  // e.g., "PE.O", "P.O", "PD"
+  model            String  // e.g., "1 PE.O", "1.1 P.O"
+  baseColor        String  // Main door panel color: "White Matte", "Graphite", etc.
+  edgeProfileColor String? // Edge profile color ONLY: "Champagne", "Silver Matte", etc.
+  glassType        String? // Fill type if applicable
+
+  // Systems & Components
+  openingSystem    String  @default("Swing")  // "Swing", "Magic", "Penal", "Compack"
+  frameSystem      String  @default("Monoblock") // "Monoblock", "Invisible"
+  hardwareSet      String? // JSON string: locks, hinges, handles
+  hasFalsePanel    Boolean @default(false) // Triggers casing-between-panel logic
+  hasTransom       Boolean @default(false) // Top transom (фрамуга)
+
+  // Pricing
+  calculatedPrice  Float   @default(0)
+
+  @@index([orderId])
+}
