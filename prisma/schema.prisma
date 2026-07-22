@@ -84,3 +84,33 @@ model OrderItem {
 
   @@index([orderId])
 }
+
+// --- CATALOG & PRICING MODELS ---
+
+model Series {
+  id               String           @id @default(cuid())
+  name             String           @unique
+  models           ProductModel[]
+  categoryMarkups  CategoryMarkup[]
+}
+
+model ProductModel {
+  id        String  @id @default(cuid())
+  name      String
+  fillType  String
+  basePrice Float
+  seriesId  String
+  series    Series  @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@unique([name, seriesId])
+}
+
+model CategoryMarkup {
+  id           String  @id @default(cuid())
+  categoryName String  // например, "Category 2"
+  markupValue  Float   // сумма или процент
+  seriesId     String
+  series       Series  @relation(fields: [seriesId], references: [id], onDelete: Cascade)
+
+  @@unique([categoryName, seriesId])
+}

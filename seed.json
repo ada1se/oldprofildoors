@@ -1,0 +1,77 @@
+{
+    "series": {
+        "P.O": {
+            "models": {},
+            "category_markups": {
+                "Category 2": 38956.248,
+                "Category 3": 38956.248
+            }
+        },
+        "N.O": {
+            "models": {},
+            "category_markups": {}
+        },
+        "PD.O": {
+            "models": {},
+            "category_markups": {}
+        },
+        "ND.O": {
+            "models": {},
+            "category_markups": {}
+        },
+        "PD": {
+            "models": {},
+            "category_markups": {}
+        },
+        "PM": {
+            "models": {},
+            "category_markups": {}
+        },
+        "PE.O": {
+            "models": {},
+            "category_markups": {}
+        },
+        "PE": {
+            "models": {},
+            "category_markups": {}
+        },
+        "NE.O": {
+            "models": {},
+            "category_markups": {}
+        },
+        "AP.O": {
+            "models": {},
+            "category_markups": {}
+        },
+        "AV.O": {
+            "models": {},
+            "category_markups": {}
+        },
+        "AX.O": {
+            "models": {},
+            "category_markups": {}
+        }
+    },
+    "dimension_rules": {
+        "height": {
+            "tier1": {
+                "markup": 0.1,
+                "description": "2050 - 2250 мм"
+            },
+            "tier2": {
+                "markup": 0.2,
+                "description": "2300 мм"
+            }
+        },
+        "width": {
+            "tier1": {
+                "markup": 0.1,
+                "description": "850, 900 мм"
+            },
+            "tier2": {
+                "markup": 0.2,
+                "description": "950, 1000 мм"
+            }
+        }
+    }
+}
