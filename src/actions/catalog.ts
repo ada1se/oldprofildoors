@@ -58,7 +58,13 @@ export async function getSeriesDetails(
 ): Promise<SeriesDetails> {
   const [models, categoryMarkups] = await Promise.all([
     prisma.productModel.findMany({
-      where: { seriesId },
+      where: { 
+        seriesId,
+        NOT: [
+          { name: { contains: "фрамуга" } },
+          { name: { contains: "Фрамуга" } }
+        ]
+      },
       select: {
         id: true,
         name: true,

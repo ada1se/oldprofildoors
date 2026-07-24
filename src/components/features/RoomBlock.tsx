@@ -345,7 +345,7 @@ export function RoomBlock({ room, index, seriesList }: RoomBlockProps) {
                       )
                     }
                   >
-                    {cat.categoryName}
+                    {cat.categoryName.replace(/Category/gi, "Категория")}
                     <span
                       style={{
                         fontSize: 11,
